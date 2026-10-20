@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POS Terminal &middot; Janeth's Meat Shop</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="is-pos" data-page="pos">
+
+<!-- ============================ LEFT RAIL ============================ -->
+<aside class="app-rail">
+  <div class="rail-scroll">
+    <a class="brand" href="dashboard.html">
+      <div class="brand-text">
+        <div class="brand-name">Janeth&rsquo;s</div>
+        <div class="brand-sub">Meat Shop</div>
+      </div>
+    </a>
+
+    <nav class="rail-group">
+      <div class="rail-label">Counter</div>
+      <ul class="nav-list">
+        <li><a class="nav-item" href="dashboard.html" data-page="dashboard"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></a></li>
+        <li><a class="nav-item is-active" href="pos.html" data-page="pos"><i class="fa-solid fa-cash-register"></i><span>POS Terminal</span></a></li>
+        <li><a class="nav-item" href="sales.html" data-page="sales"><i class="fa-solid fa-receipt"></i><span>Sales History</span></a></li>
+      </ul>
+    </nav>
+
+    <nav class="rail-group">
+      <div class="rail-label">Stock</div>
+      <ul class="nav-list">
+        <li><a class="nav-item" href="products.html" data-page="products"><i class="fa-solid fa-drumstick-bite"></i><span>Products</span><span class="nav-count" data-count="products"></span></a></li>
+        <li><a class="nav-item" href="inventory.html" data-page="inventory"><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span><span class="nav-count" data-count="lowStock"></span></a></li>
+        <li><a class="nav-item" href="suppliers.html" data-page="suppliers"><i class="fa-solid fa-truck"></i><span>Suppliers</span><span class="nav-count" data-count="suppliers"></span></a></li>
+      </ul>
+    </nav>
+
+    <nav class="rail-group">
+      <div class="rail-label">Money</div>
+      <ul class="nav-list">
+        <li><a class="nav-item" href="customers.html" data-page="customers"><i class="fa-solid fa-users"></i><span>Customers &amp; Credit</span><span class="nav-count" data-count="customers"></span></a></li>
+        <li><a class="nav-item" href="analytics.html" data-page="analytics"><i class="fa-solid fa-chart-line"></i><span>Sales &amp; Profit</span></a></li>
+        <li><a class="nav-item" href="reports.html" data-page="reports"><i class="fa-solid fa-file-pdf"></i><span>Reports</span></a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="rail-foot">
+    <span class="foot-note">Estb. 2018</span>
+    <button class="icon-btn" id="refreshAll" title="Reload data from the database">
+      <i class="fa-solid fa-rotate"></i>
+    </button>
+  </div>
+</aside>
+
+<!-- ============================ MAIN ============================ -->
+<main class="app-main">
+
+  <section id="posWorkspace">
+    <header class="topbar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="posSearch" class="search-input" placeholder="Search a cut, chorizo, isaw…">
+      </div>
+      <div class="topbar-tools">
+      </div>
+    </header>
+
+    <div class="catalog">
+      <div class="chip-row" id="categoryBar">
+        <button class="chip is-active" data-category="All">All items</button>
+        <button class="chip" data-category="Pork">Pork</button>
+        <button class="chip" data-category="Beef">Beef</button>
+        <button class="chip" data-category="Chicken">Chicken</button>
+        <button class="chip" data-category="Processed">Processed</button>
+        <button class="chip" data-category="Offal">Offal</button>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <!-- ---------------------- CART ---------------------- -->
+  <aside id="cartSidebar">
+    <div class="cart-head">
+      <div>
+        <h3>Current order</h3>
+        <p id="cartMeta">No items yet</p>
+      </div>
+      <button class="btn btn-sm btn-danger" id="clearCart"><i class="fa-solid fa-xmark"></i>Clear</button>
+    </div>
+
+    <div class="cart-customer">
+      <div class="field">
+        <label for="cartCustomer">Customer</label>
+        <select id="cartCustomer" class="select">
+          <option value="">Walk-in customer</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="cart-list" id="cartList"></div>
+
+    <div class="cart-foot">
+      <div class="summary-row"><span>Items</span><span id="cartCount" class="num">0</span></div>
+      <div class="summary-row"><span>Total weight</span><span id="cartWeight" class="num">0.00 kg</span></div>
+      <div class="summary-row total"><span>Total</span><span id="cartTotal" class="num">₱0.00</span></div>
+
+      <div class="field">
+        <label>Payment method</label>
+        <div class="pay-grid" id="payGrid">
+          <button class="pay-btn is-active" data-method="Cash">Cash</button>
+          <button class="pay-btn" data-method="GCash">GCash</button>
+          <button class="pay-btn" data-method="Credit">Credit</button>
+        </div>
+      </div>
+
+      <div class="tender-row">
+        <div class="field">
+          <label for="amountPaid" id="amountPaidLabel">Amount received</label>
+          <input type="number" id="amountPaid" class="input num" min="0" step="1" placeholder="0.00">
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <div class="change-line" id="changeLine"><span>Change</span><b>₱0.00</b></div>
+        </div>
+      </div>
+
+      <button class="btn btn-success btn-lg btn-block" id="checkoutBtn">
+        <i class="fa-solid fa-circle-check"></i><span>Complete sale</span>
+      </button>
+    </div>
+  </aside>
+</main>
+
+<!-- ============================ MODALS ============================ -->
+<div class="modal" id="formModal">
+  <div class="modal-card is-wide">
+    <div class="modal-head">
+      <div><h3 id="formModalTitle">Form</h3><p id="formModalHint"></p></div>
+      <button class="icon-btn" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="modalForm"><div class="form-grid" id="formModalFields"></div></form>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="formModalSubmit"><i class="fa-solid fa-floppy-disk"></i>Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="receiptModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><h3>Sale completed</h3><p id="receiptHint"></p></div>
+      <button class="icon-btn" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="receipt">
+      <div class="receipt-head">
+        <h3>Janeth's Meat Shop</h3>
+        <p>Sales receipt</p>
+        <p id="receiptId" class="num"></p>
+      </div>
+      <div class="receipt-body" id="receiptItems"></div>
+      <div class="receipt-body" id="receiptMeta"></div>
+      <div class="receipt-total"><span>Total</span><span id="receiptTotal"></span></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="receiptPrint"><i class="fa-solid fa-print"></i>Print receipt</button>
+      <button class="btn btn-primary" data-close-modal><i class="fa-solid fa-plus"></i>New sale</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="detailModal">
+  <div class="modal-card is-wide">
+    <div class="modal-head">
+      <div><h3 id="detailTitle">Details</h3><p id="detailHint"></p></div>
+      <button class="icon-btn" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="detailBody"></div>
+    <div class="modal-foot"><button class="btn btn-ghost" data-close-modal>Close</button></div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<!-- PDF engine (browser side, so no extra Python packages are needed) -->
+
+<!-- PDF engine (browser side, so no extra Python packages are needed) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+<!-- one script for the whole system -->
+<script src="js/script.js"></script>
+</body>
+</html>
